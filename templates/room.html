@@ -55,9 +55,21 @@
         <table style="margin: 0 auto; border-collapse: separate; border-spacing: 0 8px; text-align: center; width: 100%;">
             {% for score in playlist_item["scores"] %}
                 <tr style="background-color: #2F382E;
-                border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
-                    <td>{{ score["rank"] }}</td>
-                    <td>{{ score["user"]["username"] }}</td>
+                border-radius: 8px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+height: 64px">
+                    <td style="width: 64px;">
+                        <div style="position: relative; width: 100%; height: 64px; display: block;">
+                            <div style="width: 100%; height: 100%; top: 0; left: 0;
+                                    position: absolute;
+                                    display: block;
+                                    background-image: url('{{ url_for('static', path='/GradeSmall-' + score["rank"] + '.svg') }}');
+                                    background-position-x: 50%;
+                                    background-position-y: 50%;
+                                    background-repeat: no-repeat;"></div>
+                        </div>
+                    </td>
+                    <td style="text-align: left">{{ score["user"]["username"] }}</td>
                     <td>{{ score["mods"] | map(attribute="acronym") | join(", ") }}</td>
                     <td>Combo: {{ score["max_combo"] }}</td>
                     <td style="text-align: right;">
