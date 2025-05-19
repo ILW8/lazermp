@@ -5,5 +5,33 @@ services:
       dockerfile: Dockerfile
     env_file:
       - .env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.lazermp.rule=Host(`lazermp.41f.dev`)"
+      - "traefik.http.routers.lazermp.entrypoints=websecure"
+      - "traefik.http.routers.lazermp.tls.certresolver=custom"
+      - "traefik.http.routers.lazermp.tls.domains[0].main=lazermp.41f.dev"
+      - "traefik.http.routers.lazermp.tls=true"
+      - "traefik.http.routers.lazermp.tls.certresolver=file"
+      - "traefik.tls.stores.default.defaultCertificate.key=/certs/cf-origin-cert.key"
+      - "traefik.tls.stores.default.defaultCertificate.cert=/certs/cf-origin-cert.cert"
+      - "traefik.http.routers.lazermp.service=lazermp"
+      - "traefik.http.services.lazermp.loadbalancer.server.port=80"
+    volumes:
+      - ./certs:/certs
+
+  traefik:
+    image: traefik:v3.0
+    command:
+      - --api=true
+      - --providers.docker=true
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
     ports:
-      - "8080:80"
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - "traefik.http.routers.dashboard.rule=PathPrefix(`/api`) || PathPrefix(`/dashboard`)"
+      - "traefik.http.routers.dashboard.service=api@internal"
