@@ -26,6 +26,7 @@ services:
     restart: unless-stopped
     command:
       - --api=true
+      - --accesslog=true
       - --providers.docker=true
       - --entrypoints.web.address=:80
       - --entrypoints.websecure.address=:443
