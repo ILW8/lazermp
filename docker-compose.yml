@@ -9,7 +9,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.lazermp.rule=Host(`lazermp.41f.dev`)"
       - "traefik.http.routers.lazermp.entrypoints=websecure"
-      - "traefik.http.routers.lazermp.tls.certresolver=custom"
+#      - "traefik.http.routers.lazermp.tls.certresolver=custom"
       - "traefik.http.routers.lazermp.tls.domains[0].main=lazermp.41f.dev"
       - "traefik.http.routers.lazermp.tls=true"
 #      - "traefik.http.routers.lazermp.tls.certresolver=file"
