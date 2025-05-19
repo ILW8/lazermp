@@ -5,7 +5,14 @@
     <title>osu!lazer room</title>
 </head>
 <body>
-<h1>{{ name }}</h1>{% for playlist_item in playlists %}
+<div style="text-align: center;">
+    <h1>{{ name }}</h1>
+    <h3>from {{ starts_at }} to {{ ends_at }}</h3>
+    <h3><a href="https://osu.ppy.sh/multiplayer/rooms/{{ id }}">https://osu.ppy.sh/multiplayer/rooms/{{ id }}</a></h3>
+</div>
+
+{% for playlist_item in playlists %}
+    
     <div style="width: 80%; max-width: 900px; margin: 20px auto 0 auto; padding: 16px; height: 100px; position: relative;
             background-image: url('{{ playlist_item["beatmap"]["beatmapset"]["covers"]["cover"] }}');
             background-size: cover;
@@ -19,6 +26,9 @@
                 [{{ playlist_item["beatmap"]["version"] }}]</h3>
             <p style="margin: 4px 0 0; font-size: 1.25rem;">{{ playlist_item["beatmap"]["beatmapset"]["artist"] }}</p>
             <p style="margin: 0; font-size: 1rem;">Mapped by {{ playlist_item["beatmap"]["beatmapset"]["creator"] }}</p>
+        </div>
+        <div style="position: absolute; top: 10px; right: 10px; background-color: rgba(0, 0, 0, 0.5); color: white; padding: 5px 10px; border-radius: 12px; font-size: 1.25rem;">
+            #{{ loop.index }}
         </div>
     </div>
     <div style="width: 80%; max-width: 900px; margin: 0 auto 20px auto; padding: 16px; border-radius: 0 0 8px 8px; box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); background-color: #ddd;">

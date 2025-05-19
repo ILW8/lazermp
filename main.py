@@ -108,5 +108,8 @@ async def render_multiplayer_room(request: Request, room_id: str):
                                       name="room.html",
                                       context={
                                           "name": room_data["name"],
+                                          "id": room_data["id"],
+                                          "starts_at": room_data["starts_at"],
+                                          "ends_at": room_data["ends_at"],
                                           "playlists": readable_playlist_items
                                       })
