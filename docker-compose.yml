@@ -12,7 +12,7 @@ services:
       - "traefik.http.routers.lazermp.tls.certresolver=custom"
       - "traefik.http.routers.lazermp.tls.domains[0].main=lazermp.41f.dev"
       - "traefik.http.routers.lazermp.tls=true"
-      - "traefik.http.routers.lazermp.tls.certresolver=file"
+#      - "traefik.http.routers.lazermp.tls.certresolver=file"
       - "traefik.tls.stores.default.defaultCertificate.keyFile=/certs/cf-origin-cert.key"
       - "traefik.tls.stores.default.defaultCertificate.certFile=/certs/cf-origin-cert.cert"
       - "traefik.http.routers.lazermp.service=lazermp"
