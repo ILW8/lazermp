@@ -1,6 +1,7 @@
 import datetime
 import os
 from fastapi.responses import HTMLResponse
+import asyncio
 
 from fastapi.templating import Jinja2Templates
 
@@ -13,7 +14,7 @@ from aiolimiter import AsyncLimiter
 
 load_dotenv()
 
-aiolimit = AsyncLimiter(120, 60)
+aiolimit = AsyncLimiter(8, 4)
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
@@ -60,7 +61,7 @@ async def make_osu_request(method: str, endpoint: str, token: str):
 
 @app.get("/")
 async def root():
-    return {"message": "hi, go to /multiplayer/rooms/<room_id> to look at a match"}
+    return "hi, go to /multiplayer/rooms/<room_id> to look at a match"
 
 PLAYLIST_KEYS = ["played_at", "id", "beatmap"]
 
@@ -81,22 +82,26 @@ async def render_multiplayer_room(request: Request, room_id: str):
     if "playlist" not in room_data:
         return {"error": "room data did not contain a playlist"}
 
+    tasks = []
     for playlist_item in room_data["playlist"]:
         new_playlist_item = {key: playlist_item[key] for key in PLAYLIST_KEYS}
+        task = asyncio.create_task(
+            make_osu_request(
+                "GET",
+                f"https://osu.ppy.sh/api/v2/rooms/{room_id}/playlist/{new_playlist_item['id']}/scores",
+                access_token
+            )
+        )
+        tasks.append((task, new_playlist_item))
 
-        scores_req = await make_osu_request("GET",
-                                      f"https://osu.ppy.sh/api/v2/rooms/{room_id}/playlist/{new_playlist_item['id']}/scores",
-                                      access_token)
-
+    for task, new_playlist_item in tasks:
+        scores_req = await task
         if scores_req.status_code != 200:
             scores = {"error": f"failed fetching scores "
                                f"for playlist {new_playlist_item['id']}: {scores_req.status_code}"}
         else:
             scores = scores_req.json()["scores"]
-
-
         new_playlist_item["scores"] = scores
-
         readable_playlist_items.append(new_playlist_item)
 
     return templates.TemplateResponse(request=request,
