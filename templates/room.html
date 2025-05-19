@@ -3,8 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>osu!lazer room</title>
+
+    <style>
+        body, h1, h3, p, div, a, table, td, th {
+            color: white !important;
+        }
+    </style>
 </head>
-<body>
+<body style="background-color: #181C17;">
 <div style="text-align: center;">
     <h1>{{ name }}</h1>
     <h3>from {{ starts_at }} to {{ ends_at }}</h3>
@@ -12,7 +18,7 @@
 </div>
 
 {% for playlist_item in playlists %}
-    
+
     <div style="width: 80%; max-width: 900px; margin: 20px auto 0 auto; padding: 16px; height: 100px; position: relative;
             background-image: url('{{ playlist_item["beatmap"]["beatmapset"]["covers"]["cover"] }}');
             background-size: cover;
@@ -31,10 +37,13 @@
             #{{ loop.index }}
         </div>
     </div>
-    <div style="width: 80%; max-width: 900px; margin: 0 auto 20px auto; padding: 16px; border-radius: 0 0 8px 8px; box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); background-color: #ddd;">
+    <div style="width: 80%; max-width: 900px; margin: 0 auto 20px auto; padding: 16px; border-radius: 0 0 8px 8px;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    background-color: #232A22;">
         <table style="margin: 0 auto; border-collapse: separate; border-spacing: 0 8px; text-align: center; width: 100%;">
             {% for score in playlist_item["scores"] %}
-                <tr style="background-color: #eee; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+                <tr style="background-color: #2F382E;
+                border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
                     <td>{{ score["rank"] }}</td>
                     <td>{{ score["user"]["username"] }}</td>
                     <td>{{ score["mods"] | map(attribute="acronym") | join(", ") }}</td>
