@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>osu!lazer room</title>
+</head>
+<body>
+<h1>{{ name }}</h1>{% for playlist_item in playlists %}
+    <div style="width: 80%; max-width: 900px; margin: 20px auto 0 auto; padding: 16px; height: 100px; position: relative;
+            background-image: url('{{ playlist_item["beatmap"]["beatmapset"]["covers"]["cover"] }}');
+            background-size: cover;
+            background-position: center;
+            border-radius: 8px 8px 0 0;
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+            color: white; font-family: Arial, sans-serif;
+            display: flex; align-items: center;">
+        <div style="margin-left: 20px; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);">
+            <h3 style="margin: 0; font-size: 1.5rem;">{{ playlist_item["beatmap"]["beatmapset"]["title"] }}
+                [{{ playlist_item["beatmap"]["version"] }}]</h3>
+            <p style="margin: 4px 0 0; font-size: 1.25rem;">{{ playlist_item["beatmap"]["beatmapset"]["artist"] }}</p>
+            <p style="margin: 0; font-size: 1rem;">Mapped by {{ playlist_item["beatmap"]["beatmapset"]["creator"] }}</p>
+        </div>
+    </div>
+    <div style="width: 80%; max-width: 900px; margin: 0 auto 20px auto; padding: 16px; border-radius: 0 0 8px 8px; box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); background-color: #ddd;">
+        <table style="margin: 0 auto; border-collapse: separate; border-spacing: 0 8px; text-align: center; width: 100%;">
+            {% for score in playlist_item["scores"] %}
+                <tr style="background-color: #eee; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+                    <td>{{ score["rank"] }}</td>
+                    <td>{{ score["user"]["username"] }}</td>
+                    <td>{{ score["mods"] | map(attribute="acronym") | join(", ") }}</td>
+                    <td>Combo: {{ score["max_combo"] }}</td>
+                    <td style="text-align: right;">
+                        <div style="line-height: 1.5; margin-right: 10px;">
+                            Accuracy: {{ (score["accuracy"] * 100) | round(2) }}% &nbsp;&nbsp;&nbsp;&nbsp;
+                            Score: {{ score["total_score"] }}
+                        </div>
+                        <div style="line-height: 1.5; margin-right: 10px;">
+                            300: {{ score["statistics"]["great"] | default(0) }},
+                            100: {{ score["statistics"]["ok"] | default(0) }},
+                            50: {{ score["statistics"]["meh"] | default(0) }},
+                            Miss: {{ score["statistics"]["count_miss"] | default(0) }}
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endfor %}
+</body>
+</html>

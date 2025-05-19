@@ -1,8 +1,10 @@
 import datetime
 import os
-import time
+from fastapi.responses import HTMLResponse
 
-from fastapi import FastAPI
+from fastapi.templating import Jinja2Templates
+
+from fastapi import FastAPI, Request
 from aiocache import cached
 from dotenv import load_dotenv
 import httpx
@@ -11,8 +13,10 @@ from aiolimiter import AsyncLimiter
 
 load_dotenv()
 
-aiolimit = AsyncLimiter(60, 60)
+aiolimit = AsyncLimiter(120, 60)
 app = FastAPI()
+templates = Jinja2Templates(directory="templates")
+
 
 @cached(key="osu_token", ttl=3600)
 async def get_access_token():
@@ -61,8 +65,8 @@ async def root():
 PLAYLIST_KEYS = ["played_at", "id", "beatmap"]
 
 # https://osu.ppy.sh/multiplayer/rooms/1368095
-@app.get("/multiplayer/rooms/{room_id}")
-async def say_hello(room_id: str):
+@app.get("/multiplayer/rooms/{room_id}", response_class=HTMLResponse)
+async def render_multiplayer_room(request: Request, room_id: str):
     access_token = await get_access_token()
 
     room_request = await make_osu_request("GET", f"https://osu.ppy.sh/api/v2/rooms/{room_id}", access_token)
@@ -88,11 +92,16 @@ async def say_hello(room_id: str):
             scores = {"error": f"failed fetching scores "
                                f"for playlist {new_playlist_item['id']}: {scores_req.status_code}"}
         else:
-            scores = scores_req.json()
+            scores = scores_req.json()["scores"]
 
 
         new_playlist_item["scores"] = scores
 
         readable_playlist_items.append(new_playlist_item)
 
-    return {"name": room_data["name"], "playlist": readable_playlist_items}
+    return templates.TemplateResponse(request=request,
+                                      name="room.html",
+                                      context={
+                                          "name": room_data["name"],
+                                          "playlists": readable_playlist_items
+                                      })
