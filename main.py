@@ -1,6 +1,6 @@
 import datetime
 import os
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, Response
 import asyncio
 
 from fastapi.templating import Jinja2Templates
@@ -69,6 +69,9 @@ PLAYLIST_KEYS = ["played_at", "id", "beatmap"]
 @app.get("/multiplayer/rooms/{room_id}", response_class=HTMLResponse)
 async def render_multiplayer_room(request: Request, room_id: str):
     access_token = await get_access_token()
+
+    if access_token is None:
+        return Response(status_code=503)
 
     room_request = await make_osu_request("GET", f"https://osu.ppy.sh/api/v2/rooms/{room_id}", access_token)
 

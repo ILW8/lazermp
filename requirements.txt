@@ -1,0 +1,5 @@
+httpx~=0.28.1
+fastapi[standard]~=0.115.12
+aiocache~=0.12.3
+python-dotenv~=1.1.0
+aiolimiter~=1.2.1
