@@ -1,5 +1,6 @@
 services:
   lazermp:
+    restart: unless-stopped
     build:
       context: .
       dockerfile: Dockerfile
@@ -22,6 +23,7 @@ services:
 
   traefik:
     image: traefik:v3.0
+    restart: unless-stopped
     command:
       - --api=true
       - --providers.docker=true
