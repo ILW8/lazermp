@@ -83,13 +83,13 @@ height: 64px">
                     <td style="text-align: right;">
                         <div style="line-height: 1.5; margin-right: 10px;">
                             Accuracy: {{ (score["accuracy"] * 100) | round(2) }}% &nbsp;&nbsp;&nbsp;&nbsp;
-                            Score: {{ score["total_score"] }}
+                            Score: {{ "{:,}".format(score["total_score"]) }}
                         </div>
                         <div style="line-height: 1.5; margin-right: 10px;">
-                            300: {{ score["statistics"]["great"] | default(0) }},
-                            100: {{ score["statistics"]["ok"] | default(0) }},
-                            50: {{ score["statistics"]["meh"] | default(0) }},
-                            Miss: {{ score["statistics"]["count_miss"] | default(0) }}
+                            300: {{ "{:,}".format(score["statistics"]["great"] | default(0)) }}&nbsp;&nbsp;
+                            100: {{ "{:,}".format(score["statistics"]["ok"] | default(0)) }}&nbsp;&nbsp;
+                            50: {{ "{:,}".format(score["statistics"]["meh"] | default(0)) }}&nbsp;&nbsp;
+                            Miss: {{ "{:,}".format(score["statistics"]["count_miss"] | default(0)) }}
                         </div>
                     </td>
                 </tr>
