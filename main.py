@@ -106,7 +106,7 @@ async def render_multiplayer_room(request: Request, room_id: str):
                                f"for playlist {new_playlist_item['id']}: {scores_req.status_code}"}
         else:
             scores = scores_req.json()["scores"]
-            scores[0]["rank"] = "XH"
+
         new_playlist_item["scores"] = scores
         readable_playlist_items.append(new_playlist_item)
 
