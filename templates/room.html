@@ -78,7 +78,7 @@ height: 64px">
                         </div>
                     </td>
                     <td style="text-align: left">{{ score["user"]["username"] }}</td>
-                    <td>{{ score["mods"] | map(attribute="acronym") | join(", ") }}</td>
+                    <td>{{ score["mods"] | map(attribute="acronym") | join(" ") }}</td>
                     <td>Combo: {{ score["max_combo"] }}</td>
                     <td style="text-align: right;">
                         <div style="line-height: 1.5; margin-right: 10px;">
