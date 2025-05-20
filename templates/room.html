@@ -63,7 +63,15 @@ height: 64px">
                             <div style="width: 100%; height: 100%; top: 0; left: 0;
                                     position: absolute;
                                     display: block;
-                                    background-image: url('{{ url_for('static', path='/GradeSmall-' + score["rank"] + '.svg') }}');
+                                    {% if score["rank"] == "SH" %}
+                                        background-image: url('{{ url_for('static', path='/GradeSmall-S-Silver.svg') }}');
+                                    {% elif score["rank"] == "X" %}
+                                        background-image: url('{{ url_for('static', path='/GradeSmall-SS.svg') }}');
+                                    {% elif score["rank"] == "XH" %}
+                                        background-image: url('{{ url_for('static', path='/GradeSmall-SS-Silver.svg') }}');
+                                    {% else %}
+                                        background-image: url('{{ url_for('static', path='/GradeSmall-' + score["rank"] + '.svg') }}');
+                                    {% endif %}
                                     background-position-x: 50%;
                                     background-position-y: 50%;
                                     background-repeat: no-repeat;"></div>
