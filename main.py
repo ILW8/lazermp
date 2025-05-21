@@ -48,7 +48,7 @@ async def get_access_token():
 
 
 @cached(ttl=3600, key_builder=lambda f, *args, **kwargs: f"{args[0]}_{args[1]}")
-async def make_osu_request(method: str, endpoint: str, token: str):
+async def make_osu_request_cached(method: str, endpoint: str, token: str):
     async with aiolimit:
         request = httpx.Request(
             method,
@@ -60,6 +60,9 @@ async def make_osu_request(method: str, endpoint: str, token: str):
 
         async with httpx.AsyncClient() as client:
             return await client.send(request)
+
+async def make_osu_request(method: str, endpoint: str, token: str):
+    return await make_osu_request_cached(method, endpoint, token)
 
 @app.get("/")
 async def root():
@@ -91,7 +94,7 @@ async def render_multiplayer_room(request: Request, room_id: str):
     for playlist_item in room_data["playlist"]:
         new_playlist_item = {key: playlist_item[key] for key in PLAYLIST_KEYS}
         task = asyncio.create_task(
-            make_osu_request(
+            make_osu_request_cached(
                 "GET",
                 f"https://osu.ppy.sh/api/v2/rooms/{room_id}/playlist/{new_playlist_item['id']}/scores",
                 access_token
