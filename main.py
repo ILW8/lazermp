@@ -1,5 +1,6 @@
 import datetime
 import os
+import time
 from fastapi.responses import HTMLResponse, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -47,8 +48,9 @@ async def get_access_token():
         return resp.json()["access_token"]
 
 
-@cached(ttl=3600, key_builder=lambda f, *args, **kwargs: f"{args[0]}_{args[1]}")
-async def make_osu_request_cached(method: str, endpoint: str, token: str):
+@cached(ttl=5, key_builder=lambda f, *args, **kwargs: f"{args[0]}_{args[1]}")
+async def make_osu_request(method: str, endpoint: str, token: str):
+    start_no_ratelimit = time.perf_counter()
     async with aiolimit:
         request = httpx.Request(
             method,
@@ -56,13 +58,16 @@ async def make_osu_request_cached(method: str, endpoint: str, token: str):
             headers={"Authorization": f"Bearer {token}"}
         )
 
-        print(f"[{datetime.datetime.now().isoformat()}] {method.upper()} {endpoint}")
-
         async with httpx.AsyncClient() as client:
-            return await client.send(request)
+            start = time.perf_counter()
+            resp = await client.send(request)
+            end = time.perf_counter()
 
-async def make_osu_request(method: str, endpoint: str, token: str):
-    return await make_osu_request_cached(method, endpoint, token)
+            print(f"[{datetime.datetime.now().isoformat()}] {method.upper()} {endpoint} "
+                  f"({resp.headers.get('x-ratelimit-remaining')}/{resp.headers.get('x-ratelimit-limit')}, {(end - start)*1000:.2f} + {(start - start_no_ratelimit)*1000:.2f}ms)")
+
+            return resp
+
 
 @app.get("/")
 async def root():
@@ -94,7 +99,7 @@ async def render_multiplayer_room(request: Request, room_id: str):
     for playlist_item in room_data["playlist"]:
         new_playlist_item = {key: playlist_item[key] for key in PLAYLIST_KEYS}
         task = asyncio.create_task(
-            make_osu_request_cached(
+            make_osu_request(
                 "GET",
                 f"https://osu.ppy.sh/api/v2/rooms/{room_id}/playlist/{new_playlist_item['id']}/scores",
                 access_token
