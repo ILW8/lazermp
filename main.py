@@ -96,7 +96,20 @@ async def render_multiplayer_room(request: Request, room_id: str):
         return {"error": "room data did not contain a playlist"}
 
     tasks = []
+    seen_maps = set()
+
     for playlist_item in room_data["playlist"]:
+        # filter playlist items which:
+        #   1. has seen the map more than once
+        #   2. `played_at == None`
+        # these item(s) are playlist items the lobby defaults to after a map is complete.
+        # doing it this way will allow for a newly picked map to appear while still filtering out duplicates
+        if playlist_item["beatmap_id"] in seen_maps and playlist_item["played_at"] is None:
+            print(f"skipping playlist item {playlist_item['id']}, already seen beatmap_id and played_at is null")
+            continue
+
+        seen_maps.add(playlist_item["beatmap_id"])
+
         new_playlist_item = {key: playlist_item[key] for key in PLAYLIST_KEYS}
         task = asyncio.create_task(
             make_osu_request(
