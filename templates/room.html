@@ -89,7 +89,7 @@ height: 64px">
                             300: {{ "{:,}".format(score["statistics"]["great"] | default(0)) }}&nbsp;&nbsp;
                             100: {{ "{:,}".format(score["statistics"]["ok"] | default(0)) }}&nbsp;&nbsp;
                             50: {{ "{:,}".format(score["statistics"]["meh"] | default(0)) }}&nbsp;&nbsp;
-                            Miss: {{ "{:,}".format(score["statistics"]["count_miss"] | default(0)) }}
+                            Miss: {{ "{:,}".format(score["statistics"]["miss"] | default(0)) }}
                         </div>
                     </td>
                 </tr>
