@@ -15,7 +15,7 @@ from aiolimiter import AsyncLimiter
 
 load_dotenv()
 
-aiolimit = AsyncLimiter(8, 4)
+aiolimit = AsyncLimiter(20, 4)
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
