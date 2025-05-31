@@ -48,7 +48,7 @@ async def get_access_token():
         return resp.json()["access_token"]
 
 
-@cached(ttl=5, key_builder=lambda f, *args, **kwargs: f"{args[0]}_{args[1]}")
+@cached(ttl=300, key_builder=lambda f, *args, **kwargs: f"{args[0]}_{args[1]}")
 async def make_osu_request(method: str, endpoint: str, token: str):
     start_no_ratelimit = time.perf_counter()
     async with aiolimit:
